@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>HagonFarm</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #222;
+    }
+
+    header {
+      background: white;
+      padding: 16px 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+     left: 0;
+     width: 100%;
+     z-index: 1000;
+    }
+
+    .logo {
+      font-family: 'Satisfy', cursive;
+      font-size: 28px;
+      color: #2d7a3f;
+    }
+
+    nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #555;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: opacity 0.3s ease;
+    }
+
+    nav a:hover {
+      opacity: 0.6;
+    }
+
+    nav a.active {
+      background: #e8f5e9;
+      color: #2d7a3f;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .grid { display: grid; gap: 16px; margin-bottom: 16px; }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+    .grid-2 { grid-template-columns: 2fr 1fr; }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .kpi {
+      text-align: center;
+      padding: 20px 10px;
+    }
+
+    .kpi-value {
+      font-size: 28px;
+      font-weight: bold;
+      color: #000;
+      margin-bottom: 8px;
+    }
+
+    .kpi-label {
+      font-size: 14px;
+      color: #666;
+    }
+
+    h2 {
+      font-size: 18px;
+      margin-bottom: 16px;
+      color: #333;
+    }
+
+    .chart {
+      height: 180px;
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .bar {
+      flex: 1;
+      border-radius: 4px 4px 0 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      color: #000;
+      font-weight: bold;
+      font-size: 16px;
+      padding-bottom: 8px;
+    }
+
+    .bar:nth-child(1) { height: 60%; background: #4caf50; }
+    .bar:nth-child(2) { height: 40%; background: #2196f3; }
+    .bar:nth-child(3) { height: 75%; background: #ff9800; }
+    .bar:nth-child(4) { height: 30%; background: #f44336; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+
+    th, td {
+      padding: 12px 8px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      font-weight: bold;
+      background: #f9f9f9;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      color: white;
+      display: inline-block;
+    }
+
+    .badge.ok { background: #4caf50; }
+    .badge.warn { background: #ff9800; }
+    .badge.bad { background: #f44336; }
+
+    .alert {
+      background: #fff3f3;
+      border-left: 3px solid #f44336;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .map {
+      height: 400px;
+      background: #e8f5e9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      font-size: 18px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .list-item {
+      background: #fafafa;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      background: #4caf50;
+      color: white;
+    }
+
+    button.secondary {
+      background: white;
+      border: 1px solid #ddd;
+      color: #333;
+    }
+
+    .partner {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      background: #e8f5e9;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #2d7a3f;
+      font-size: 18px;
+    }
+
+    .chat {
+      height: 360px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      background: #fafafa;
+      border-radius: 6px;
+    }
+
+    .msg {
+      max-width: 70%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 12px;
+      font-size: 14px;
+    }
+
+    .msg.you {
+      background: #e8f5e9;
+      margin-left: auto;
+    }
+
+    .msg.other {
+      background: white;
+    }
+
+    .chat-input {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+      border: 1px solid #d1fae5;
+      transition: all 0.3s;
+    }
+
+    .stat-card:hover {
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2);
+      border-color: #a7f3d0;
+      transform: translateY(-2px);
+    }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 1rem;
+    }
+
+    .stat-icon {
+      padding: 0.75rem;
+      border-radius: 1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-icon i {
+      color: white;
+      font-size: 1.5rem;
+    }
+
+    .stat-icon.emerald { background: #10b981; }
+    .stat-icon.blue { background: #3b82f6; }
+    .stat-icon.amber { background: #f59e0b; }
+    .stat-icon.violet { background: #8b5cf6; }
+
+    .stat-change {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .stat-change.positive { color: #10b981; }
+    .stat-change.negative { color: #ef4444; }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .grid-4, .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr; }
+      header { flex-direction: column; gap: 12px; }
+      nav a { margin: 0 8px; }
+    }
+    .partner-logo {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div style="display: flex; align-items: center; gap: 12px; cursor: pointer;"
+         onclick="document.querySelector('[data-page=dash]').click()">
+      <img src="logo hagonfarm xóa phông .png" alt="HagonFarm Logo" style="width: 80px; height: 80px; object-fit: contain;">
+      <div class="logo">HagonFarm</div>
+    </div>
+    <nav>
+      <a href="#" class="nav active" data-page="dash">Trang chủ</a>
+      <a href="#" class="nav" data-page="supply">Chuỗi cung ứng</a>
+      <a href="#" class="nav" data-page="partners">Đối tác</a>
+    </nav>
+  </header>
+
+  <div style="width: 100%; height: 450px; position: relative; overflow: hidden; background: #f0f8f0">
+    <img src="banner-vegetables.jpg" alt="Fresh Vegetables" style="position: absolute; width: 100%; height: 100%; object-fit: cover; opacity: 0.3">
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(37, 89, 37, 0.85) 0%, rgba(195, 210, 199, 0.85) 100%)"></div>
+    <div style="position: relative; max-width: 1200px; margin: 0 auto; padding: 0 20px; height: 100%; display: flex; align-items: center; justify-content: space-between; z-index: 2">
+      <div style="color: white; max-width: 600px">
+        <h1 style="font-size: 48px; font-weight: bold; margin-bottom: 16px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3)">Quản lý chuỗi cung ứng</h1>
+        <p style="font-size: 24px; margin-bottom: 24px; text-shadow: 1px 1px 2px rgba(0,0,0,0.3)">Nông sản tươi sạch, nguồn gốc rõ ràng</p>
+      </div>
+    </div>
+  </div>
+
+ <div class="container">
+    <!-- Dashboard Page -->
+    <div id="dash" class="page active">
+      <div style="text-align:center; margin:40px 0 60px">
+        <h2 style="font-size:32px; margin-bottom:12px; color:#2d7a3f;">Điểm mạnh của HF</h2>
+        <p style="font-size:16px; color:#555;">Tổng quan chuỗi cung ứng nông sản</p>
+      </div>
+
+      <!-- Dashboard-style Service Section -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon emerald">
+              <i class="fas fa-shopping-cart"></i>
+            </div>
+            <span class="stat-change positive">+12%</span>
+          </div>
+          <div class="stat-value">1,284</div>
+          <div class="stat-label">Tổng đơn hàng</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon blue">
+              <i class="fas fa-box"></i>
+            </div>
+            <span class="stat-change positive">+8%</span>
+          </div>
+          <div class="stat-value">156</div>
+          <div class="stat-label">Đang vận chuyển</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon amber">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <span class="stat-change negative">-5%</span>
+          </div>
+          <div class="stat-value">23</div>
+          <div class="stat-label">Cảnh báo</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon violet">
+              <i class="fas fa-users"></i>
+            </div>
+            <span class="stat-change positive">+15%</span>
+          </div>
+          <div class="stat-value">89</div>
+          <div class="stat-label">Đối tác</div>
+        </div>
+      </div>
+
+      <!-- Additional Services -->
+      <div style="margin: 48px 0">
+        <h2 style="font-size: 28px; text-align: center; color: #2d7a3f">
+          Về chúng tôi
+        </h2>
+        <p style="text-align: center; font-size: 18px; line-height: 1.6; max-width: 800px; margin: 0 auto; color:#555;">
+          HF là doanh nghiệp trong lĩnh vực chuỗi cung ứng nông sản sạch, hướng đến tiêu chí nhanh chóng – tiết kiệm – an toàn. Công ty cung cấp giải pháp vận chuyển và phân phối nông sản từ trang trại đến người tiêu dùng, đảm bảo tươi sạch, truy xuất nguồn gốc rõ ràng, góp phần thúc đẩy phát triển bền vững cho nông dân và doanh nghiệp địa phương.
+        </p>
+        <div style="display:flex; gap: 120px; justify-content: center; flex-wrap: wrap;">
+          <div style="text-align: center; max-width: 200px;">
+            <img src="phủ sóng toàn quốc.png" style="width:100%; height:150px; border-radius: 20px;" alt="phủ sóng toàn quốc"/>
+            <h4 style="margin-top: 12px; font-weight: 600; color: #333;">Phủ sóng Toàn quốc</h4>
+            <p style="color: #999; font-size: 14px;">Phủ sóng tại 34 tỉnh thành</p>
+          </div>
+          <div style="text-align: center; max-width: 200px;">
+            <img src="giao hàng nhanh chóng.png" style="width:100%; height:150px; border-radius: 20px;" alt="Giao hàng Nhanh chóng"/>
+            <h4 style="margin-top: 12px; font-weight: 600; color: #333;">Giao hàng Nhanh chóng</h4>
+            <p style="color: #999; font-size: 14px;">Giao hàng đáng tin cậy và đúng hẹn</p>
+          </div>
+          <div style="text-align: center; max-width: 200px;">
+            <img src="ứng dụng công nghệ.jpg" style="width:100%; height:150px; border-radius: 20px;" alt="Ứng dụng Công nghệ"/>
+            <h4 style="margin-top: 12px; font-weight: 600; color: #333;">Ứng dụng Công nghệ</h4>
+            <p style="color: #999; font-size: 14px;">Theo dõi đơn hàng theo thời gian thực</p>
+          </div>
+          <div style="text-align: center; max-width: 200px;">
+            <img src="cam kết bền vững.jpg" style="width:100%; height:150px; border-radius: 20px;" alt="Cam kết Bền vững"/>
+            <h4 style="margin-top: 12px; font-weight: 600; color: #333;">Cam kết Bền vững</h4>
+            <p style="color: #999; font-size: 14px;">Dẫn dắt đội ngũ tận tâm</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Section with Counter Animation -->
+      <div id="stats-section" style="background: linear-gradient(135deg, #2d7a3f, #4caf50); border-radius: 16px; padding: 48px 32px; margin: 48px 0; color: white; text-align: center">
+        <h2 style="font-size: 28px; margin-bottom: 40px; color: white">HagonFarm qua những con số</h2>
+        <div class="grid grid-4">
+          <div>
+            <div class="counter" data-target="500" data-suffix="+" style="font-size: 42px; font-weight: bold; margin-bottom: 8px">0+</div>
+            <div style="font-size: 16px; opacity: 0.9">Nông trại đối tác</div>
+          </div>
+          <div>
+            <div class="counter" data-target="52" style="font-size: 42px; font-weight: bold; margin-bottom: 8px">0</div>
+            <div style="font-size: 16px; opacity: 0.9">Kho lạnh toàn quốc</div>
+          </div>
+          <div>
+            <div class="counter" data-target="10000" data-suffix="+" style="font-size: 42px; font-weight: bold; margin-bottom: 8px">0+</div>
+            <div style="font-size: 16px; opacity: 0.9">Đơn hàng/tháng</div>
+          </div>
+          <div>
+            <div class="counter" data-target="98" data-suffix="%" style="font-size: 42px; font-weight: bold; margin-bottom: 8px">0%</div>
+            <div style="font-size: 16px; opacity: 0.9">Hài lòng khách hàng</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Supply Chain -->
+    <div id="supply" class="page">
+      <div class="grid grid-2">
+        <div>
+          <div class="card">
+            <h2>Bản đồ vận chuyển</h2>
+            <div class="map">
+              <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d14904.633166408299!2d105.75629532573247!3d20.946157447227158!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1svi!2s!4v1760514211165!5m2!1svi!2s"
+                width="100%" 
+                height="100%" 
+                style="border:0;" 
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade">
+              </iframe>
+            </div>
+          </div>
+          
+          <div class="card" style="margin-top: 16px">
+            <h2>Lịch sử lô #L0023</h2>
+            <div style="font-size: 14px; line-height: 2">
+              <div>[07:30] Đã xuất kho Bình Thuận</div>
+              <div>[10:05] Xe VN-51-1234 đang vận chuyển</div>
+              <div>[15:20] Dự kiến giao: 2025-11-20</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Lô đang vận chuyển</h2>
+          <div class="list-item">
+            <div>
+              <div style="font-weight:bold">#L0023 — Thanh long</div>
+              <div style="font-size:13px;color:#666">Bình Thuận → ETA: 16/10</div>
+            </div>
+            <span class="badge warn">Đang giao</span>
+          </div>
+          <div class="list-item">
+            <div>
+              <div style="font-weight:bold">#L0088 — Cải xanh</div>
+              <div style="font-size:13px;color:#666">Long An → ETA: 15/10</div>
+            </div>
+            <span class="badge ok">Đã xuất</span>
+          </div>
+          <div class="list-item">
+            <div>
+              <div style="font-weight:bold">#L0110 — Hành tây</div>
+              <div style="font-size:13px;color:#666">Đà Lạt → ETA: 18/10</div>
+            </div>
+            <span class="badge bad">Trễ</span>
+          </div>
+          <button style="width:100%;margin-top:16px" onclick="resetMap()">Cập nhật vị trí</button>
+        </div>
+      </div>
+    </div>
+
+<!-- Partners -->
+<div id="partners" class="page">
+  <div class="grid grid-2">
+
+    <div>
+      <h2>Nhà cung cấp</h2>
+      <div class="grid grid-3" style="margin-bottom: 16px">
+
+        <div class="card">
+          <div class="partner">
+            <img src="tổng cty rau quả, nông sản.jpg" class="partner-logo" alt="Logo HT" />
+            <div>
+              <div style="font-weight:bold">Tổng công ty Rau quả, Nông sản</div>
+              <div style="font-size:13px;color:#666">Hà Nội</div>
+            </div>
+          </div>
+          <div style="font-size:13px;color:#666;margin:8px 0">Thanh long, Chanh</div>
+          <button style="width:100%" onclick="window.open('https://www.vegetexcovn.com.vn/', '_blank')">Liên hệ</button>
+        </div>
+
+        <div class="card">
+          <div class="partner">
+            <img src="Nông trại Tươi.png" class="partner-logo" alt="Logo NT" />
+            <div>
+              <div style="font-weight:bold">Nông trại Tươi</div>
+              <div style="font-size:13px;color:#666">Lâm Đồng</div>
+            </div>
+          </div>
+          <div style="font-size:13px;color:#666;margin:8px 0">Rau, Hoa</div>
+          <button style="width:100%" onclick="window.open('https://nongsandalatlamdong.vn/homepages/Home/Index', '_blank')">Liên hệ</button>
+        </div>
+
+        <div class="card">
+          <div class="partner">
+            <img src="van tai x.jpg" class="partner-logo" alt="Logo VT" />
+            <div>
+              <div style="font-weight:bold">Vận tải X</div>
+              <div style="font-size:13px;color:#666">TP.HCM</div>
+            </div>
+          </div>
+          <div style="font-size:13px;color:#666;margin:8px 0">Logistics</div>
+          <button style="width:100%" onclick="window.open('https://xlogistics.vn/', '_blank')">Liên hệ</button>
+        </div>
+
+      </div>
+
+      <div class="card">
+        <h2>Hợp đồng</h2>
+        <table>
+          <tr>
+            <td>#C-2025-001 — Tổng công ty Rau quả, Nông sản</td>
+            <td style="text-align:right;color:#666">120 ngày</td>
+          </tr>
+          <tr>
+            <td>#C-2025-002 — Nông trại Tươi</td>
+            <td style="text-align:right;color:#666">45 ngày</td>
+          </tr>
+          <tr>
+            <td>#C-2025-003 — Vận Tải X</td>
+            <td style="text-align:right;color:#666">Gia Hạn Tháng 12/2025</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+        <div>
+          <div class="card chat">
+            <h2>Chat</h2>
+            <div class="messages" id="msgs" role="log" aria-live="polite">
+              <div class="msg other">
+                <strong>Tổng công ty Rau quả, Nông sản</strong>
+                <div style="margin-top:4px">Lô #L0023 đã rời kho</div>
+              </div>
+              <div class="msg you">Đã nhận. Gửi xác nhận nhiệt độ</div>
+              <div class="msg other">Nhiệt độ 4-6°C</div>
+            </div>
+
+            <div class="chat-input">
+              <input id="text" type="text" autocomplete="off" aria-label="Nhập tin nhắn" placeholder="Nhập tin nhắn..."/>
+              <button id="send" aria-label="Gửi tin nhắn">Gửi</button>
+            </div>
+          </div>
+          <div class="card" style="margin-top: 16px">
+            <h2>Thông tin</h2>
+            <div style="margin-bottom:8px">Số đối tác: <strong>24</strong></div>
+            <div style="margin-bottom:12px">Hợp đồng sắp hết: <strong>3</strong></div>
+            <button style="width:100%" onclick="window.open('hopdong.doc', '_blank')">Tạo hợp đồng mới</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Navigation
+    document.querySelectorAll('.nav').forEach(link => {
+      link.onclick = e => {
+        e.preventDefault();
+        document.querySelectorAll('.nav').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        const page = document.getElementById(link.dataset.page);
+        if (page) {
+          page.classList.add('active');
+        }
+      }
+    });
+
+    // Counter Animation
+    let hasAnimated = false;
+
+    function animateCounter(element) {
+      const target = parseInt(element.dataset.target);
+      const suffix = element.dataset.suffix || '';
+      const duration = 2000;
+      const increment = target / (duration / 16);
+      let current = 0;
+
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          current = target;
+          clearInterval(timer);
+        }
+
+        let displayValue;
+        if (target >= 10000) {
+          displayValue = Math.floor(current).toLocaleString('en-US') + suffix;
+        } else {
+          displayValue = Math.floor(current) + suffix;
+        }
+
+        element.textContent = displayValue;
+      }, 16);
+    }
+
+    // Intersection Observer for scroll trigger
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !hasAnimated) {
+          hasAnimated = true;
+          document.querySelectorAll('.counter').forEach(counter => {
+            animateCounter(counter);
+          });
+        }
+      });
+    }, { threshold: 0.5 });
+
+    // Observe stats section
+    const statsSection = document.getElementById('stats-section');
+    if (statsSection) {
+      observer.observe(statsSection);
+    }
+
+    // Reset map
+    function resetMap() {
+      const iframe = document.querySelector('.map iframe');
+      if (iframe) {
+        const currentSrc = iframe.src;
+        iframe.src = '';
+        setTimeout(() => {
+          iframe.src = currentSrc;
+        }, 10);
+      }
+    }
+
+    // Chat
+    function send() {
+      const txt = document.getElementById('text');
+      if (!txt.value.trim()) return;
+
+      const msg = document.createElement('div');
+      msg.className = 'msg you';
+      msg.textContent = txt.value;
+      const msgsContainer = document.getElementById('msgs');
+      msgsContainer.appendChild(msg);
+      msgsContainer.scrollTop = msgsContainer.scrollHeight;
+      txt.value = '';
+
+      setTimeout(() => {
+        const reply = document.createElement('div');
+        reply.className = 'msg other';
+        reply.innerHTML = '<strong>Hệ thống</strong><div style="margin-top:4px">Đã nhận tin nhắn của bạn</div>';
+        msgsContainer.appendChild(reply);
+        msgsContainer.scrollTop = msgsContainer.scrollHeight;
+      }, 500);
+    };
+
+    document.getElementById('send').onclick = send;
+    document.getElementById('text').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        send();
+      }
+    });
+  </script>
+</body>
+</html>
